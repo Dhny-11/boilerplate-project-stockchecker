@@ -73,11 +73,13 @@ module.exports = function (app) {
     });
   });
   app.get('/_api/app-info', function(req, res) {
-    var hs = Object.keys(res._headers)
+    // Menggunakan res.getHeaders() sebagai pengganti res._headers yang sudah usang
+    var headers = res.getHeaders();
+    var hs = Object.keys(headers)
       .filter(h => !h.match(/^access-control-\w+/));
     var hObj = {};
-    hs.forEach(h => {hObj[h] = res._headers[h]});
-    delete res._headers['strict-transport-security'];
+    hs.forEach(h => {hObj[h] = headers[h]});
+    delete hObj['strict-transport-security'];
     res.json({headers: hObj});
   });
   
